@@ -1,5 +1,5 @@
-#!name=📺 Bilibili 综合增强与去广告（合并版）
-#!desc=合并了 UI 自定义和去广告功能。UI 参数已硬编码，请根据注释自行修改。
+#!name=📺 Bilibili 综合增强与去广告（最终合并版）
+#!desc=整合了 BiliBili.Enhanced UI 自定义和 bilibili.lpx 去广告功能。UI 参数已硬编码。
 #!author=Merged_by_AI
 #!tag=Bilibili, Enhanced, AdBlock
 
@@ -21,40 +21,30 @@ AND,((DOMAIN-SUFFIX,chat.bilibili.com),(OR,((DOMAIN-KEYWORD,stun),(DOMAIN-KEYWOR
 [Script]
 # ====================================================================
 # A. UI 自定义脚本 (来自 BiliBili.Enhanced.plugin)
-# 参数已硬编码如下：
-# 1.Home.Tab: "直播tab,推荐tab,bangumi,anime"
-# 2.Home.Tab_default: "推荐tab"
-# 3.Home.Top_left: "videoshortcut"
-# 4.Home.Top: "消息Top"
-# 5.Bottom: "home,dynamic,ogv,我的Bottom"
-# 6.LogLevel: "WARN"
+# 参数已使用双引号正确包裹，以确保被脚本识别为单个字符串参数。
 # ====================================================================
 
 # 首页 Tab 配置
-http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/resource\/show\/tab\/v2\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.Tab, argument=[直播tab,推荐tab,bangumi,anime,推荐tab,videoshortcut,消息Top,home,dynamic,ogv,我的Bottom,WARN]
+http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/resource\/show\/tab\/v2\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.Tab, argument=["直播tab,推荐tab,bangumi,anime","推荐tab","videoshortcut","消息Top","home,dynamic,ogv,我的Bottom","WARN"]
 
 # 我的页面配置
-http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/account\/mine(\/ipad)?\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.Mine, argument=[直播tab,推荐tab,bangumi,anime,推荐tab,videoshortcut,消息Top,home,dynamic,ogv,我的Bottom,WARN]
+http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/account\/mine(\/ipad)?\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.Mine, argument=["直播tab,推荐tab,bangumi,anime","推荐tab","videoshortcut","消息Top","home,dynamic,ogv,我的Bottom","WARN"]
 
 # 频道页面配置
-http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/region\/index\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.Region, argument=[直播tab,推荐tab,bangumi,anime,推荐tab,videoshortcut,消息Top,home,dynamic,ogv,我的Bottom,WARN]
+http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/region\/index\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.Region, argument=["直播tab,推荐tab,bangumi,anime","推荐tab","videoshortcut","消息Top","home,dynamic,ogv,我的Bottom","WARN"]
 
-http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/channel\/region\/list\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.RegionList, argument=[直播tab,推荐tab,bangumi,anime,推荐tab,videoshortcut,消息Top,home,dynamic,ogv,我的Bottom,WARN]
+http-response ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/channel\/region\/list\? requires-body=1, script-path=https://github.com/BiliUniverse/Enhanced/releases/download/v0.5.10/response.bundle.js, tag=📺 Enhanced.UI.RegionList, argument=["直播tab,推荐tab,bangumi,anime","推荐tab","videoshortcut","消息Top","home,dynamic,ogv,我的Bottom","WARN"]
 
 
 # ====================================================================
 # B. 去广告及优化脚本 (来自 bilibili.lpx)
-# 参数已硬编码如下：
-# showUpList: "show" (始终显示动态最常访问)
-# purifyTopReplies: "true" (移除评论区置顶广告)
-# airborne: "true" (启用空降助手)
-# logLevel: "warn"
+# 参数已硬编码: 空降助手启用, 评论广告移除, 动态最常访问显示。
 # ====================================================================
 
-# 空降助手请求脚本
+# 空降助手请求脚本 (启用)
 http-request ^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.community\.service\.dm\.v1\.DM\/DmSegMobile$ script-path=https://kelee.one/Resource/JavaScript/Bilibili/Bilibili_proto_request_kokoryh.js, requires-body=true, binary-body-mode=true, tag=空降助手, enable=true, argument="warn"
 
-# ProtoBuf处理响应脚本
+# ProtoBuf处理响应脚本 (启用)
 http-response ^https:\/\/(grpc\.biliapi\.net|app\.bilibili\.com)\/bilibili\.(app\.(show\.v1\.Popular\/Index|dynamic\.v2\.Dynamic\/DynAll|view(unite)?\.v1\.View\/(View|ViewProgress|RelatesFeed)|playurl\.v1\.PlayURL\/PlayView|playerunite\.v1\.Player\/PlayViewUnite)|polymer\.app\.search\.v1\.Search\/SearchAll|community\.service\.dm\.v1\.DM\/DmView|main\.community\.reply\.v1\.Reply\/MainList|pgc\.gateway\.player\.v2\.PlayURL\/PlayView)$ script-path=https://kelee.one/Resource/JavaScript/Bilibili/Bilibili_proto_response_kokoryh.js, requires-body=true, binary-body-mode=true, tag=ProtoBuf处理, argument="[show, true, true, warn]"
 
 [Rewrite]
