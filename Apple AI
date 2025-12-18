@@ -1,0 +1,9 @@
+name: Apple US 规则 (Egern版)
+desc: 将苹果服务分流至美国节点
+category: Router
+
+# 规则部分
+rules:
+  # https://raw.githubusercontent.com/xpdigital/Apple-Rule/refs/heads/main/Apple-US.list
+  - rule_set: https://raw.githubusercontent.com/xpdigital/Apple-Rule/refs/heads/main/Apple-US.list
+    proxy: 狮城节点  # 注意：这里必须填你在 Egern 里真实的节点名或策略组名
