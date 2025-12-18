@@ -1,26 +1,36 @@
-name: Bilibili 极简增强 (直播去推广+空降)
-desc: "精简版：仅保留去首页直播推广、空降助手、弹幕跳转功能"
+name: Bilibili 极简增强 (针对性修复版)
+desc: "仅去除首页直播推广+空降助手。优化了加载速度，解决首页卡顿问题。"
 category: Rewrite
 
-# 1. 主机名解密 (必须包含这些域名才能修改数据)
+# 1. 解密域名
 mitm:
   hostnames:
     - app.bilibili.com
+    - config.bilibili.com
 
-# 2. 脚本重写逻辑
+# 2. 规则过滤 (直接在网络层拦截广告，不经过脚本，速度最快)
+rewrites:
+  # 拦截开屏广告
+  - match: ^https:\/\/app\.bilibili\.com\/x\/v2\/splash\/list
+    type: reject
+  # 拦截一些不必要的配置下发，减少干扰
+  - match: ^https:\/\/config\.bilibili\.com\/x\/v2\/config\/show
+    type: reject
+
+# 3. 脚本重写 (只在必要时运行)
 scripts:
-  # 首页去直播推介、广告
+  # 修改首页数据：去除直播、广告、游戏推介
   - name: Bili_Home_Fix
     type: http-response
     match: ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index
-    script_url: https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-v2.js
+    script_url: https://raw.githubusercontent.com/ddgksf2013/Scripts/master/bilibili_diy.js
     requires_body: true
-    timeout: 10
+    timeout: 5
 
-  # 空降助手 (负责自动跳过片头和进度跳转)
+  # 空降助手
   - name: Bili_AirDrop
     type: http-response
-    match: ^https:\/\/app\.bilibili\.com\/x\/v2\/view\?(.*)
-    script_url: https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-v2.js
+    match: ^https:\/\/app\.bilibili\.com\/x\/v2\/view\?
+    script_url: https://raw.githubusercontent.com/ddgksf2013/Scripts/master/bilibili_diy.js
     requires_body: true
-    timeout: 10
+    timeout: 5
