@@ -1,36 +1,36 @@
-name: Bilibili 极简增强 (针对性修复版)
-desc: "仅去除首页直播推广+空降助手。优化了加载速度，解决首页卡顿问题。"
+name: Bilibili 首页净化 (强力修复版)
+desc: "针对直播卡片顽固问题，通过拦截 grpc 及增强脚本覆盖实现。"
 category: Rewrite
 
-# 1. 解密域名
 mitm:
   hostnames:
     - app.bilibili.com
     - config.bilibili.com
+    - grpc.bilibili.com
 
-# 2. 规则过滤 (直接在网络层拦截广告，不经过脚本，速度最快)
 rewrites:
-  # 拦截开屏广告
-  - match: ^https:\/\/app\.bilibili\.com\/x\/v2\/splash\/list
+  # 拦截首页所有的 feed 增量接口，强制 App 只走 feed/index
+  - match: ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index\/add
     type: reject
-  # 拦截一些不必要的配置下发，减少干扰
-  - match: ^https:\/\/config\.bilibili\.com\/x\/v2\/config\/show
+  # 拦截 gRPC 相关域名，强制降级到普通 HTTP 环境
+  - match: ^https?:\/\/grpc\.bilibili\.com
+    type: reject
+  # 拦截首页广告（静态拦截）
+  - match: ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index\/ad
     type: reject
 
-# 3. 脚本重写 (只在必要时运行)
 scripts:
-  # 修改首页数据：去除直播、广告、游戏推介
-  - name: Bili_Home_Fix
+  # 首页去直播 (增加对 index/index 的匹配，扩大范围)
+  - name: Bili_Home_Clean
     type: http-response
     match: ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index
-    script_url: https://raw.githubusercontent.com/ddgksf2013/Scripts/master/bilibili_diy.js
+    script_url: https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-v2.js
     requires_body: true
-    timeout: 5
+    timeout: 10
 
   # 空降助手
   - name: Bili_AirDrop
     type: http-response
     match: ^https:\/\/app\.bilibili\.com\/x\/v2\/view\?
-    script_url: https://raw.githubusercontent.com/ddgksf2013/Scripts/master/bilibili_diy.js
+    script_url: https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-v2.js
     requires_body: true
-    timeout: 5
