@@ -1,35 +1,39 @@
-name: Apple Intelligence 极速修复
-desc: 已匹配节点名“美国节点”，强制系统级分流。
+name: Apple Intelligence 终极修复
 category: Router
 
 rules:
-  # --- 你提供的域名规则（强制不解析直接走代理） ---
-  - domain: guzzoni.apple.com
+  # 1. 强制拦截地理位置和验证请求 (禁止本地解析，由节点服务器代为解析)
+  - domain: xp.apple.com
     proxy: 美国节点
     no_resolve: true
-  - domain-suffix: smoot.apple.com
+  - domain: gateway.icloud.com
     proxy: 美国节点
     no_resolve: true
-  - domain-suffix: apple-relay.cloudflare.com
+  - domain: gs-loc.apple.com
     proxy: 美国节点
     no_resolve: true
-  - domain-suffix: apple-relay.fastly-edge.com
-    proxy: 美国节点
-    no_resolve: true
-  - domain-suffix: cp4.cloudflare.com
-    proxy: 美国节点
-    no_resolve: true
-  - domain-suffix: apple-relay.apple.com
-    proxy: 美国节点
-    no_resolve: true
-  - domain-suffix: gspe1-ssl.ls.apple.com
+  - domain: configuration.apple.com
     proxy: 美国节点
     no_resolve: true
 
-  # --- ChatGPT 核心域名 ---
+  # 2. 拦截所有 Apple Relay（系统集成 ChatGPT 必须经过这个通道）
+  - domain-suffix: apple-relay.apple.com
+    proxy: 美国节点
+  - domain-suffix: apple-relay.cloudflare.com
+    proxy: 美国节点
+  - domain-suffix: apple-relay.fastly-edge.com
+    proxy: 美国节点
+    
+  # 3. 拦截所有 OpenAI 和 Apple Intelligence 域名
   - domain-suffix: openai.com
     proxy: 美国节点
   - domain-suffix: chatgpt.com
     proxy: 美国节点
   - domain-keyword: apple-intelligence
+    proxy: 美国节点
+
+  # 4. 兜底策略：确保规则模式下 apple 流量不走 DIRECT
+  - domain-suffix: apple.com
+    proxy: 美国节点
+  - domain-suffix: icloud.com
     proxy: 美国节点
