@@ -1,26 +1,32 @@
-name: Apple Intelligence 修复模块
-desc: 适配 Egern 的 Apple US 分流规则，解决系统 ChatGPT 选项失效问题
+name: Apple Intelligence 极速修复
+desc: 已匹配节点名“美国节点”，强制系统级分流。
 category: Router
 
-# 【核心规则】
 rules:
-  # 你提供的域名规则（已转换为 Egern 格式）
+  # --- 你提供的域名规则（强制不解析直接走代理） ---
   - domain: guzzoni.apple.com
     proxy: 美国节点
+    no_resolve: true
   - domain-suffix: smoot.apple.com
     proxy: 美国节点
+    no_resolve: true
   - domain-suffix: apple-relay.cloudflare.com
     proxy: 美国节点
+    no_resolve: true
   - domain-suffix: apple-relay.fastly-edge.com
     proxy: 美国节点
+    no_resolve: true
   - domain-suffix: cp4.cloudflare.com
     proxy: 美国节点
+    no_resolve: true
   - domain-suffix: apple-relay.apple.com
     proxy: 美国节点
+    no_resolve: true
   - domain-suffix: gspe1-ssl.ls.apple.com
     proxy: 美国节点
+    no_resolve: true
 
-  # 【补充核心：ChatGPT 系统集成必须域名】
+  # --- ChatGPT 核心域名 ---
   - domain-suffix: openai.com
     proxy: 美国节点
   - domain-suffix: chatgpt.com
