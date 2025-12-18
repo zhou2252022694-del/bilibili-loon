@@ -1,0 +1,26 @@
+name: Bilibili 极简增强 (直播去推广+空降)
+desc: "精简版：仅保留去首页直播推广、空降助手、弹幕跳转功能"
+category: Rewrite
+
+# 1. 主机名解密 (必须包含这些域名才能修改数据)
+mitm:
+  hostnames:
+    - app.bilibili.com
+
+# 2. 脚本重写逻辑
+scripts:
+  # 首页去直播推介、广告
+  - name: Bili_Home_Fix
+    type: http-response
+    match: ^https:\/\/app\.bilibili\.com\/x\/v2\/feed\/index
+    script_url: https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-v2.js
+    requires_body: true
+    timeout: 10
+
+  # 空降助手 (负责自动跳过片头和进度跳转)
+  - name: Bili_AirDrop
+    type: http-response
+    match: ^https:\/\/app\.bilibili\.com\/x\/v2\/view\?(.*)
+    script_url: https://raw.githubusercontent.com/app2smile/rules/master/js/bilibili-v2.js
+    requires_body: true
+    timeout: 10
